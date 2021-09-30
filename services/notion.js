@@ -12,20 +12,18 @@ const database_id = process.env.NOTION_DATABASE_ID
 class NotionController {
 
     /**
-     * Create Database
+     * Create Blog Post
      * 
      * @param {*} req 
      * @param {*} res 
      * @returns array
      */
-    static async createDatabase(req, res) {
+    static async createBlogPost(req, res) {
         // validation rules
         let rules = {
-            'type': 'required',
-            'page_id': 'required',
             'title': 'required',
-            'properties_title': 'required',
-            'properties_description': 'required'
+            'tags': 'required',
+            'description': 'required',
         }
 
         // validate request body
@@ -38,48 +36,53 @@ class NotionController {
         }
 
         let {
-            type,
-            page_id,
             title,
-            properties_title,
-            properties_description,
+            tags,
+            description
         } = req.body
 
-        const bodyParams = {
+        const body = {
             parent: {
-                type: type,
-                page_id: page_id,
+                database_id: database_id
             },
-            title: [
-                {
-                    type: "text",
-                    text: {
-                        content: title,
-                        link: null,
-                    }
-                }
-            ],
             properties: {
                 Name: {
-                    title: properties_title,
+                    title: [{
+                        text: {
+                            content: title
+                        },
+                    }],
                 },
                 Description: {
-                    rich_text: properties_description
+                    rich_text: [{
+                        type: "text",
+                        text: {
+                            content: description
+                        }
+                    }]
+                },
+                Tags: {
+                    multi_select: [
+                        tags.reduce((a, v) => ({ ...a, [v]: v}), {})
+                    ],
                 },
             },
+            title,
+            tags,
+            description,
         }
 
         const payload = {
             path: `databases`,
             method: 'POST',
-            body: bodyParams,
+            body: body,
         };
 
-        try {            
+        try {
             await notion.request(payload).then(result => {
-                return res.status(200).json({
+                return res.status(201).json({
                     error: false,
-                    message: "Database created",
+                    message: "Blog post created successfully",
                     data: result,
                 })
             }).catch(error => {
@@ -91,13 +94,13 @@ class NotionController {
     }
 
     /**
-     * Query Database
+     * Blog Posts
      * 
      * @param {*} req 
      * @param {*} res 
      * @returns array
      */
-    static async queryDatabase(req, res) {
+    static async blogPosts(req, res) {
         const payload = {
             path: `databases/${database_id}/query`,
             method: 'POST'

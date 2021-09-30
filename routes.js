@@ -4,12 +4,12 @@ const NotionController = require("./services/notion");
 
 /**
  * @swagger
- * /api/v1/create/database:
+ * /api/v1/create/post:
  *   post:
  *     tags:
- *       - Basic
- *     name: Create Database
- *     summary: Send request create a database
+ *       - Blog Post
+ *     name: Create Blog Post
+ *     summary: Request to create blog post
  *     consumes:
  *       - application/json
  *     produces:
@@ -20,55 +20,51 @@ const NotionController = require("./services/notion");
  *         schema:
  *           type: object
  *           properties:
- *             type:
- *               type: string
- *             page_id:
- *               type: string
  *             title:
  *               type: string
- *             properties_title:
- *               type: string
- *             properties_description:
- *               type: string
+ *             tags:
+ *               type: array
+ *               items:
+ *                 type: string
+ *             description:
+ *               type: text
  *         required:
- *           - type
- *           - page_id
  *           - title
- *           - properties_title
- *           - properties_description
+ *           - tags
+ *           - description
  *     responses:
- *       200:
- *         description: Query results object
+ *       201:
+ *         description:  Blog Post created successfully
  *       400:
  *         description: Bad request
  *       500:
  *         description: Internal server error
  */
 // create database
-router.post('/create/database', NotionController.createDatabase);
+router.post('/create/post', NotionController.createBlogPost);
 
 /**
  * @swagger
- * /api/v1/query/database:
+ * /api/v1/blog/posts:
  *   get:
  *     tags:
- *       - Basic
- *     name: Query Database
- *     summary: Send request to query a database
+ *       - Blog Post
+ *     name: Blog Posts
+ *     summary: Request to retrieve all blog posts
  *     consumes:
  *       - application/json
  *     produces:
  *       - application/json
  *     responses:
  *       200:
- *         description: Query results object
+ *         description: Blog Posts Object
  *       400:
  *         description: Bad request
  *       500:
  *         description: Internal server error
  */
-// query database
-router.get("/query/database", NotionController.queryDatabase);
+// blog posts
+router.get("/blog/posts", NotionController.blogPosts);
 
 
 module.exports = router;
