@@ -60,7 +60,7 @@ http://localhost/api-docs
 #### Create Blog Post
 
 ```http
-  POST /api/v1/create/database
+  POST /api/v1/create/post
 ```
 
 | Parameter     | Type     | Description                       |
