@@ -69,14 +69,22 @@ http://localhost/api-docs
 | `tags`        | `array`  | **Require**. Tags of the blog post   |
 | `description` | `text`   | **Required**. Body of the blog post  |
 
+## Todo
+- Creation of blog post
+- Retrieving single blog post
+- Updating blog post
+- Deleting blog post
 
+
+## Contributing
+Please feel free to fork this package and contribute by submitting a pull request to enhance the functionalities.
 
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
   
-## Authors
+## Author
 
 - [@kodegrenade](https://www.github.com/kodegrenade)
 

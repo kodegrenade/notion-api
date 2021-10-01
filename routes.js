@@ -26,8 +26,8 @@ const NotionController = require("./services/notion");
  *               type: array
  *               items:
  *                 type: string
- *             description:
- *               type: text
+ *             body:
+ *               type: string
  *         required:
  *           - title
  *           - tags

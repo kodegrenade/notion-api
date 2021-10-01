@@ -1,6 +1,7 @@
 const dotenv =  require('dotenv').config()
 const formValidator = require('../middleware/formValidator')
 const { Client } = require('@notionhq/client')
+const { v4: uuidv4 } = require('uuid')
 
 // Init client
 const notion = new Client({
@@ -23,7 +24,7 @@ class NotionController {
         let rules = {
             'title': 'required',
             'tags': 'required',
-            'description': 'required',
+            'body': 'required',
         }
 
         // validate request body
@@ -41,35 +42,47 @@ class NotionController {
             description
         } = req.body
 
+        // post date
+        let date = new Date()
+        let timestamp = `${date.getFullYear()}-${ (date.getMonth() > 0 && date.getMonth() < 10 ? '0' : '') }${date.getMonth() + 1}-${date.getDate()}`
+
         const body = {
             parent: {
+                page_id: uuidv4(),
                 database_id: database_id
             },
             properties: {
-                Name: {
-                    title: [{
-                        text: {
-                            content: title
-                        },
-                    }],
-                },
-                Description: {
-                    rich_text: [{
+                Title: [
+                    {
                         type: "text",
                         text: {
-                            content: description
+                            content: "Hello"
                         }
-                    }]
-                },
-                Tags: {
-                    multi_select: [
-                        tags.reduce((a, v) => ({ ...a, [v]: v}), {})
-                    ],
-                },
+                    }
+                ],
+                // Name: {
+                //     title: [
+                //         {
+                //             text: {
+                //                 content: title
+                //             },
+                //         }
+                //     ],
+                // },
+                // Description: {
+                //     rich_text: [{
+                //         type: "text",
+                //         text: {
+                //             content: description
+                //         }
+                //     }]
+                // },
+                // Tags: {
+                //     multi_select: [
+                //         tags.reduce((a, v) => ({ ...a, [v]: v}), {})
+                //     ],
+                // },
             },
-            title,
-            tags,
-            description,
         }
 
         const payload = {
@@ -79,7 +92,7 @@ class NotionController {
         };
 
         try {
-            await notion.request(payload).then(result => {
+            await notion.pages.create(payload).then(result => {
                 return res.status(201).json({
                     error: false,
                     message: "Blog post created successfully",
@@ -114,7 +127,7 @@ class NotionController {
                         title: page.properties.Name.title[0].text.content,
                         date: page.properties.Date.date.start,
                         tags: page.properties.Tags.rich_text[0].text.content,
-                        description: page.properties.Description.rich_text[0].text.content
+                        body: page.properties.Description.rich_text[0].text.content
                     }
                 })
                 return res.status(200).json(data)
