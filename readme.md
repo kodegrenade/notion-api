@@ -77,7 +77,7 @@ http://localhost/api-docs
 
 
 ## Contributing
-Please feel free to fork this package and contribute by submitting a pull request to enhance the functionalities.
+Please feel free to fork this repo and contribute by submitting a pull request to enhance the functionalities.
 
 ## License
 
