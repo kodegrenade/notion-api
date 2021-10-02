@@ -63,14 +63,24 @@ http://localhost/api-docs
   POST /api/v1/create/post
 ```
 
-| Parameter     | Type     | Description                       |
-| :------------ | :------- | :-------------------------------- |
-| `title`       | `string` | **Required**. Title of the blog post |
-| `tags`        | `array`  | **Require**. Tags of the blog post   |
-| `description` | `text`   | **Required**. Body of the blog post  |
+| Parameter     | Type     | Description                          |
+| :------------ | :------- | :----------------------------------- |
+| `title`       | `string` | **Required**. Blog post title        |
+| `tags`        | `array`  | **Require**. Blog post tags          |
+| `content`     | `text`   | **Required**. Blog post content      |
+| `author`      | `string` | **Required**. Blog post author       | 
+
+#### Search Blog Post
+
+```http
+  POST /api/v1/blog/search
+```
+
+| Parameter      | Type     | Description                          |
+| :------------- | :------- | :----------------------------------- |
+| `search`       | `string` | **Required**. Blog post title        |
 
 ## Todo
-- Creation of blog post
 - Retrieving single blog post
 - Updating blog post
 - Deleting blog post

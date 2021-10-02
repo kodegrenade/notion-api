@@ -26,12 +26,15 @@ const NotionController = require("./services/notion");
  *               type: array
  *               items:
  *                 type: string
- *             body:
+ *             content:
+ *               type: string
+ *             author:
  *               type: string
  *         required:
  *           - title
  *           - tags
- *           - description
+ *           - content
+ *           - author
  *     responses:
  *       201:
  *         description:  Blog Post created successfully
@@ -41,7 +44,7 @@ const NotionController = require("./services/notion");
  *         description: Internal server error
  */
 // create database
-router.post('/create/post', NotionController.createBlogPost);
+router.post("/create/post", NotionController.createBlogPost);
 
 /**
  * @swagger
@@ -65,6 +68,39 @@ router.post('/create/post', NotionController.createBlogPost);
  */
 // blog posts
 router.get("/blog/posts", NotionController.blogPosts);
+
+/**
+  * @swagger
+  * /api/v1/blog/search:
+  *   post:
+  *     tags:
+  *       - Blog Post
+  *     name: Search Blog Post
+  *     summary: Search for blog post
+  *     consumes:
+  *       - application/json
+  *     produces:
+  *       - application/json
+  *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             search:
+ *               type: string             
+ *         required:
+ *           - search
+  *     responses:
+  *       200:
+  *         description: Blog Post Object
+  *       400:
+  *         description: Bad request
+  *       500:
+  *         description: Internal server error
+  */
+ // search posts
+router.post("/blog/search/", NotionController.searchBlogPost);
 
 
 module.exports = router;
