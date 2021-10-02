@@ -70,6 +70,12 @@ http://localhost/api-docs
 | `content`     | `text`   | **Required**. Blog post content      |
 | `author`      | `string` | **Required**. Blog post author       | 
 
+#### Single blog details
+
+```http
+  GET /api/v1/blog/:id
+```
+
 #### Search Blog Post
 
 ```http
