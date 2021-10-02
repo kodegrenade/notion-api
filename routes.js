@@ -70,6 +70,36 @@ router.post("/create/post", NotionController.createBlogPost);
 router.get("/blog/posts", NotionController.blogPosts);
 
 /**
+ * @swagger
+ * /api/v1/blog/{id}:
+ *   get:
+ *     tags:
+ *       - Blog Post
+ *     name: Blog post details
+ *     summary: Get blog post details
+ *     produces:
+ *       - application/json
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required:
+ *           - id
+ *     responses:
+ *       200:
+ *         description: Blog post object
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Internal server error
+ */
+// blog post details
+router.get("/blog/:id", NotionController.blogInfo);
+
+/**
   * @swagger
   * /api/v1/blog/search:
   *   post:
@@ -82,15 +112,15 @@ router.get("/blog/posts", NotionController.blogPosts);
   *     produces:
   *       - application/json
   *     parameters:
- *       - name: body
- *         in: body
- *         schema:
- *           type: object
- *           properties:
- *             search:
- *               type: string             
- *         required:
- *           - search
+  *       - name: body
+  *         in: body
+  *         schema:
+  *           type: object
+  *           properties:
+  *             search:
+  *               type: string             
+  *         required:
+  *           - search
   *     responses:
   *       200:
   *         description: Blog Post Object
@@ -99,7 +129,7 @@ router.get("/blog/posts", NotionController.blogPosts);
   *       500:
   *         description: Internal server error
   */
- // search posts
+// search posts
 router.post("/blog/search/", NotionController.searchBlogPost);
 
 

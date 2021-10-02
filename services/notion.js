@@ -2,6 +2,7 @@ const dotenv =  require('dotenv').config()
 const formValidator = require('../middleware/formValidator')
 const { Client } = require('@notionhq/client')
 const { v4: uuidv4 } = require('uuid')
+const moment = require('moment')
 
 // Init client
 const notion = new Client({
@@ -45,10 +46,6 @@ class NotionController {
             author,
         } = req.body
 
-        // post date
-        let date = new Date()
-        let timestamp = `${date.getFullYear()}-${ (date.getMonth() > 0 && date.getMonth() < 9 ? '0' : '') }${date.getMonth() + 1}-${ (date.getDate() > 0 && date.getDate() < 10 ? '0': '')}${date.getDate()}`
-
         // body
         const data = {
             "parent": {
@@ -67,7 +64,7 @@ class NotionController {
                 },
                 "Date": {
                     "type": "date",
-                    "date": { "start": timestamp },
+                    "date": { "start": moment().format('YYYY-MM-DD') },
                 },
                 "Description": {
                     "rich_text": [
@@ -131,7 +128,7 @@ class NotionController {
     static async blogPosts(req, res) {
         const payload = {
             path: `databases/${database_id}/query`,
-            method: 'POST'
+            method: "POST",
         }
         
         try {
@@ -147,6 +144,42 @@ class NotionController {
                     }
                 })
                 return res.status(200).json(data)
+            }).catch(error => {
+                return res.sendStatus(error)
+            })
+        } catch (error) {
+            return res.sendStatus(500)
+        }
+    }
+
+    /**
+     * Single Blog Post Info
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @returns object
+     */
+    static async blogInfo(req, res) {
+        let id  = req.params.id;
+                
+        const payload = {
+            path: `databases/${database_id}/query`,
+            method: "POST"
+        }
+
+        try {
+            await notion.request(payload).then(results => {
+                const data = results.results.filter(object => object.id === id).map((object) => {
+                    return {
+                        id: object.id,
+                        title: object.properties.Name.title[0].text.content,
+                        date: object.properties.Date.date.start,
+                        tags: object.properties.Tags.rich_text[0].text.content,
+                        body: object.properties.Description.rich_text[0].text.content,
+                        author: object.properties.Author.rich_text[0].text.content,   
+                    }
+                })
+                return res.status(200).json(data[0] || {});
             }).catch(error => {
                 return res.sendStatus(error)
             })
@@ -177,26 +210,25 @@ class NotionController {
 
         const query = req.body.search
 
-        const payload = {
-            path: "search",
-            method: "POST",
-            query: query,
-        }
-
         try {
-            await notion.request(payload).then(results => {
-                const data = results.results.filter(object => object.object == "page")
-                const records = data.filter(object => object.title === query).map((object) => {
+            await notion.search({
+                query: query,
+                sort: {
+                    direction: "descending",
+                    timestamp: "last_edited_time",
+                }
+            }).then(results => {
+                const data = results.results.map((page) => {
                     return {
-                        id: object.id,
-                        title: object.properties.Name.title[0].text.content,
-                        date: object.properties.Date.date.start,
-                        tags: object.properties.Tags.rich_text[0].text.content,
-                        body: object.properties.Description.rich_text[0].text.content,
-                        author: object.properties.Author.rich_text[0].text.content,   
+                        id: page.id,
+                        title: page.properties.Name.title[0].text.content,
+                        date: page.properties.Date.date.start,
+                        tags: page.properties.Tags.rich_text[0].text.content,
+                        body: page.properties.Description.rich_text[0].text.content,
+                        author: page.properties.Author.rich_text[0].text.content,   
                     }
-                })
-                return res.status(200).json(records)
+                });
+                return res.status(200).json(data)
             }).catch(error => {
                 return res.sendStatus(error)
             });

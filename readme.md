@@ -66,7 +66,7 @@ http://localhost/api-docs
 | Parameter     | Type     | Description                          |
 | :------------ | :------- | :----------------------------------- |
 | `title`       | `string` | **Required**. Blog post title        |
-| `tags`        | `array`  | **Require**. Blog post tags          |
+| `tags`        | `array`  | **Required**. Blog post tags         |
 | `content`     | `text`   | **Required**. Blog post content      |
 | `author`      | `string` | **Required**. Blog post author       | 
 
@@ -75,16 +75,15 @@ http://localhost/api-docs
 ```http
   POST /api/v1/blog/search
 ```
+**PS:** Supports only search by title
 
 | Parameter      | Type     | Description                          |
 | :------------- | :------- | :----------------------------------- |
 | `search`       | `string` | **Required**. Blog post title        |
 
 ## Todo
-- Retrieving single blog post
 - Updating blog post
 - Deleting blog post
-
 
 ## Contributing
 Please feel free to fork this repo and contribute by submitting a pull request to enhance the functionalities.
